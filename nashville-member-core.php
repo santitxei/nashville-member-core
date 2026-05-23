@@ -22,8 +22,8 @@ register_activation_hook( __FILE__, array( 'Nashville_Activator', 'activate' ) )
 // 2. Cargar dependencias (CPTs y Lógica)
 function nashville_member_core_load() {
     require_once NASHVILLE_MEMBER_CORE_DIR . 'includes/class-nashville-cpt.php';
-    // Descomentaremos esto más adelante cuando los creemos:
-    // require_once NASHVILLE_MEMBER_CORE_DIR . 'includes/class-nashville-offers-logic.php';
+    require_once NASHVILLE_MEMBER_CORE_DIR . 'includes/class-nashville-offers-logic.php';
+    Nashville_Offers_Logic::init();
     // require_once NASHVILLE_MEMBER_CORE_DIR . 'includes/class-nashville-gift-logic.php';
 }
 add_action( 'plugins_loaded', 'nashville_member_core_load' );
