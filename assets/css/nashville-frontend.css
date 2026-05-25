@@ -152,3 +152,37 @@
 .claim-btn:hover {
     background: #e0be63;
 }
+
+.claimed-code-box {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(201, 168, 76, 0.1);
+    border: 1px dashed #C9A84C;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.code-label {
+    font-size: 0.75rem;
+    color: #C9A84C;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+
+.code-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.2rem;
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.code-notes {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: #ccc;
+    line-height: 1.4;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 0.8rem;
+}
