@@ -48,6 +48,14 @@ class Nashville_Frontend {
             return '<p>' . __( 'You must be logged in to view your Backstage Pass.', 'nashville-member-core' ) . '</p>';
         }
 
+        // Comprobación doble de seguridad: Verificar si es socio activo de MemberPress
+        if ( class_exists('MeprUser') ) {
+            $mepr_user = new MeprUser( get_current_user_id() );
+            if ( ! $mepr_user->is_active() ) {
+                return '<p>' . __( 'Your Backstage Pass membership is not active. Please renew your subscription.', 'nashville-member-core' ) . '</p>';
+            }
+        }
+
         $current_user = wp_get_current_user();
         $user_name = $current_user->first_name ? $current_user->first_name : $current_user->display_name;
 
@@ -60,6 +68,14 @@ class Nashville_Frontend {
     public static function render_offers_dashboard( $atts ) {
         if ( ! is_user_logged_in() ) {
             return '<p>' . __( 'You must be logged in to view partner offers.', 'nashville-member-core' ) . '</p>';
+        }
+
+        // Comprobación doble de seguridad: Verificar si es socio activo de MemberPress
+        if ( class_exists('MeprUser') ) {
+            $mepr_user = new MeprUser( get_current_user_id() );
+            if ( ! $mepr_user->is_active() ) {
+                return '<p>' . __( 'Your Backstage Pass membership is not active. Please renew your subscription to see the offers.', 'nashville-member-core' ) . '</p>';
+            }
         }
 
         ob_start();
