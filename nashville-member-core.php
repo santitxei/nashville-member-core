@@ -26,5 +26,8 @@ function nashville_member_core_load() {
     Nashville_Offers_Logic::init();
     require_once NASHVILLE_MEMBER_CORE_DIR . 'includes/class-nashville-gift-logic.php';
     Nashville_Gift_Logic::init();
+
+    require_once NASHVILLE_MEMBER_CORE_DIR . 'includes/class-nashville-acf.php';
+    Nashville_ACF::init();
 }
 add_action( 'plugins_loaded', 'nashville_member_core_load' );
