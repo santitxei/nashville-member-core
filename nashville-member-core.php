@@ -32,5 +32,11 @@ function nashville_member_core_load() {
 
     require_once NASHVILLE_MEMBER_CORE_DIR . 'includes/class-nashville-frontend.php';
     Nashville_Frontend::init();
+
+    // Solo cargar la clase de administración si estamos en el panel de WP
+    if ( is_admin() ) {
+        require_once NASHVILLE_MEMBER_CORE_DIR . 'includes/class-nashville-admin.php';
+        Nashville_Admin::init();
+    }
 }
 add_action( 'plugins_loaded', 'nashville_member_core_load' );
