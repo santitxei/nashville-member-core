@@ -29,5 +29,8 @@ function nashville_member_core_load() {
 
     require_once NASHVILLE_MEMBER_CORE_DIR . 'includes/class-nashville-acf.php';
     Nashville_ACF::init();
+
+    require_once NASHVILLE_MEMBER_CORE_DIR . 'includes/class-nashville-frontend.php';
+    Nashville_Frontend::init();
 }
 add_action( 'plugins_loaded', 'nashville_member_core_load' );

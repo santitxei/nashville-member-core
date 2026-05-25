@@ -1,0 +1,154 @@
+/* Nashville Insider Frontend CSS */
+.nashville-portal {
+    font-family: 'DM Sans', 'Inter', sans-serif;
+    color: #F5F0EB;
+    background: #0D0D0D;
+    padding: 2rem;
+    border-radius: 8px;
+}
+
+.nashville-portal h2 {
+    color: #C9A84C;
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 2rem;
+}
+
+/* Digital Card */
+.member-card-wrapper {
+    position: fixed;
+    inset: 0;
+    background: #0D0D0D;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    z-index: 9999;
+    color: #F5F0EB;
+    text-align: center;
+    padding: 2rem;
+}
+
+.member-card__pulse {
+    width: 320px;
+    height: 480px;
+    background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+    border: 1px solid #C9A84C;
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: pulse-glow 3s ease-in-out infinite;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.1);
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(201, 168, 76, 0.2); }
+    50% { box-shadow: 0 0 40px rgba(201, 168, 76, 0.4); }
+}
+
+.member-card__badge {
+    color: #C9A84C;
+    letter-spacing: 4px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.member-card__name {
+    font-size: 2.5rem;
+    color: #C9A84C;
+    margin: 1rem 0;
+    text-transform: capitalize;
+}
+
+.member-card__since {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    font-family: 'DM Mono', monospace;
+}
+
+.verify-status {
+    margin-top: 2rem;
+    font-family: 'DM Mono', monospace;
+    color: #C9A84C;
+    min-height: 24px;
+}
+
+/* Dashboard Grid */
+.nashville-offers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.offer-card {
+    background: #111111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: transform 0.2s, border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.offer-card:hover {
+    transform: translateY(-5px);
+    border-color: #C9A84C;
+}
+
+.offer-card h3 {
+    color: #C9A84C;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+}
+
+.offer-card p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    flex-grow: 1;
+    opacity: 0.9;
+}
+
+.offer-type-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    background: #222;
+    color: #C9A84C;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-family: 'DM Mono', monospace;
+    align-self: flex-start;
+}
+
+.claim-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: #C9A84C;
+    color: #000;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s;
+}
+
+.claim-btn:hover {
+    background: #e0be63;
+}
