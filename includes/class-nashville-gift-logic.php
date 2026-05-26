@@ -76,4 +76,37 @@ class Nashville_Gift_Logic {
 
         return $updated !== false;
     }
+
+    /**
+     * Completa todo el flujo: marca en DB y crea transacción en MemberPress
+     */
+    public static function mark_gift_claimed_with_mepr( $code, $user_id ) {
+        // 1. Actualizar nuestra tabla de regalos
+        $updated = self::mark_gift_claimed( $code, $user_id );
+        
+        if ( ! $updated ) {
+            return false;
+        }
+
+        // 2. Crear transacción gratuita de MemberPress (12 meses)
+        if ( class_exists( 'MeprTransaction' ) ) {
+            $txn = new MeprTransaction();
+            $txn->user_id = $user_id;
+            $txn->product_id = 2209; // ID de Backstage Pass
+            $txn->amount = 0.00;
+            $txn->total = 0.00;
+            $txn->tax_amount = 0.00;
+            $txn->tax_rate = 0.00;
+            $txn->trans_num = uniqid( 'gift_' );
+            $txn->status = MeprTransaction::$complete_str;
+            $txn->txn_type = MeprTransaction::$payment_str;
+            $txn->expires_at = date( 'Y-m-d H:i:s', strtotime( '+12 months' ) );
+            $txn->gateway = 'manual';
+            $txn->store();
+            
+            return true;
+        }
+        
+        return false;
+    }
 }

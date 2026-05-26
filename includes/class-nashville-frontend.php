@@ -6,9 +6,14 @@ class Nashville_Frontend {
         // Registrar scripts y estilos
         add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
 
-        // Registrar shortcodes
+        // Frontend
         add_shortcode( 'nashville_digital_card', array( __CLASS__, 'render_digital_card' ) );
         add_shortcode( 'nashville_offers_dashboard', array( __CLASS__, 'render_offers_dashboard' ) );
+        add_shortcode( 'nashville_redeem_gift', array( __CLASS__, 'render_redeem_gift' ) );
+
+        // Admin-post para procesar el formulario de canje
+        add_action( 'admin_post_nopriv_nashville_redeem_gift_process', array( __CLASS__, 'process_redeem_gift' ) );
+        add_action( 'admin_post_nashville_redeem_gift_process', array( __CLASS__, 'process_redeem_gift' ) );
 
         // API endpoints para el frontend (AJAX / REST)
         add_action( 'rest_api_init', array( __CLASS__, 'register_rest_routes' ) );
@@ -81,6 +86,73 @@ class Nashville_Frontend {
         ob_start();
         include NASHVILLE_MEMBER_CORE_DIR . 'templates/offers-dashboard.php';
         return ob_get_clean();
+    }
+
+    public static function render_redeem_gift( $atts ) {
+        // Cargar y devolver la plantilla HTML del formulario de regalo
+        ob_start();
+        include NASHVILLE_MEMBER_CORE_DIR . 'templates/redeem-gift.php';
+        return ob_get_clean();
+    }
+
+    public static function process_redeem_gift() {
+        if ( ! isset( $_POST['nashville_redeem_nonce'] ) || ! wp_verify_nonce( $_POST['nashville_redeem_nonce'], 'nashville_redeem_gift_nonce' ) ) {
+            wp_die( 'Security check failed' );
+        }
+
+        $code     = sanitize_text_field( $_POST['gift_code'] );
+        $name     = sanitize_text_field( $_POST['user_name'] );
+        $email    = sanitize_email( $_POST['user_email'] );
+        $password = $_POST['user_password']; // wp_create_user handles hashing
+        
+        $redirect_url = wp_get_referer() ? wp_get_referer() : home_url();
+
+        // 1. Validar el código de regalo
+        require_once NASHVILLE_MEMBER_CORE_DIR . 'includes/class-nashville-gift-logic.php';
+        $validation = Nashville_Gift_Logic::validate_gift_code( $code );
+        
+        if ( is_wp_error( $validation ) ) {
+            $error_url = add_query_arg( 'gift_error', urlencode( $validation->get_error_message() ), $redirect_url );
+            wp_redirect( $error_url );
+            exit;
+        }
+
+        // 2. Comprobar si el email ya existe
+        if ( email_exists( $email ) ) {
+            $error_url = add_query_arg( 'gift_error', urlencode( 'Este email ya está registrado. Por favor, inicia sesión o usa otro email.' ), $redirect_url );
+            wp_redirect( $error_url );
+            exit;
+        }
+
+        // 3. Crear el usuario en WordPress
+        $user_id = wp_create_user( $email, $password, $email );
+        if ( is_wp_error( $user_id ) ) {
+            $error_url = add_query_arg( 'gift_error', urlencode( 'Error al crear la cuenta. Inténtalo de nuevo.' ), $redirect_url );
+            wp_redirect( $error_url );
+            exit;
+        }
+        
+        // Actualizar nombre
+        wp_update_user( array( 'ID' => $user_id, 'first_name' => $name, 'display_name' => $name ) );
+
+        // 4. Marcar regalo como canjeado y dar acceso de MemberPress
+        $success = Nashville_Gift_Logic::mark_gift_claimed_with_mepr( $code, $user_id );
+
+        if ( ! $success ) {
+            $error_url = add_query_arg( 'gift_error', urlencode( 'Error al procesar el pase VIP en MemberPress.' ), $redirect_url );
+            wp_redirect( $error_url );
+            exit;
+        }
+
+        // 5. Iniciar sesión automáticamente
+        wp_clear_auth_cookie();
+        wp_set_current_user( $user_id );
+        wp_set_auth_cookie( $user_id );
+
+        // Redirigir con éxito
+        $success_url = add_query_arg( 'gift_success', '1', $redirect_url );
+        wp_redirect( $success_url );
+        exit;
     }
 
     public static function register_rest_routes() {
