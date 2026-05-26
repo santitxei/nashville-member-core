@@ -88,11 +88,14 @@ class Nashville_Gift_Logic {
             return false;
         }
 
-        // 2. Crear transacción gratuita de MemberPress (12 meses)
+        // 2. Obtener el ID de la membresía desde los ajustes (por defecto 2209)
+        $membership_id = (int) get_option( 'nashville_backstage_pass_id', 2209 );
+
+        // 3. Crear transacción gratuita de MemberPress (12 meses)
         if ( class_exists( 'MeprTransaction' ) ) {
             $txn = new MeprTransaction();
             $txn->user_id = $user_id;
-            $txn->product_id = 2209; // ID de Backstage Pass
+            $txn->product_id = $membership_id; 
             $txn->amount = 0.00;
             $txn->total = 0.00;
             $txn->tax_amount = 0.00;
